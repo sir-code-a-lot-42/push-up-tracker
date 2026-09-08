@@ -222,15 +222,14 @@ nav svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.
 /* ═══════════════════════════════════════════════════════════
    HIER EINTRAGEN: die /exec-URL deines Apps-Script-Deployments
    ═══════════════════════════════════════════════════════════ */
-const API = 'https://script.google.com/macros/s/AKfycbw19DY42V9m4yjzUXmP83Pj0T-1BUgmKj1iob3GXyN7bfOqq9QkGDxg4tU-vgPc71PQ8g/exec';
-
+const API = 'https://script.google.com/macros/s/AKfycbzOzTeaO_dA_9EHDUGXidvRoZvVT6edIz3i4QDD4BpvoMcYE5PBhACaCk-Qvqix9sx5Vw/exec';
 
 const K = { tok:'pu_token', cfg:'pu_cfg', queue:'pu_queue', cache:'pu_cache' };
 const DEFAULTS = { start:10, end:1000, days:115, mode:'exp', first:null };
 
 let token   = localStorage.getItem(K.tok) || '';
 let cfg     = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(K.cfg) || '{}'));
-let entries = JSON.parse(localStorage.getItem(K.cache) || '[]');
+let entries = [];   // wird nach der Definition von cleanEntries befüllt
 let queue   = JSON.parse(localStorage.getItem(K.queue) || '[]');
 let flushTimer = null, retryDelay = 2000;
 let planLog = true, showAll = false, tab = 'heute';
@@ -243,20 +242,38 @@ const parseISO = s => { const [y,m,d]=s.split('-').map(Number); return new Date(
 const addDays = (s,n) => { const d=parseISO(s); d.setDate(d.getDate()+n); return iso(d); };
 const daysBetween = (a,b) => Math.round((parseISO(b)-parseISO(a))/86400000);
 const WD = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+
+/* Das Datum aus dem Sheet kann als '2026-09-08' oder als voller
+   Zeitstempel ankommen – hier wird beides auf 'YYYY-MM-DD' gebracht. */
+function normDate(v){
+  if (v === null || v === undefined) return null;
+  const s = String(v);
+  const m = s.match(/^\d{4}-\d{2}-\d{2}/);
+  if (m) return m[0];
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : iso(d);
+}
+const cleanEntries = arr => (arr||[])
+  .map(e => ({ id:e.id, ts:e.ts, count:Number(e.count)||0,
+               date: normDate(e.date) || normDate(e.ts) }))
+  .filter(e => e.date && e.count);
 const MO = ['Jän','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const short = s => { const d=parseISO(s); return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'; };
 
+entries = cleanEntries(JSON.parse(localStorage.getItem(K.cache) || '[]'));
+
 /* ── Ziel-Rampe ─────────────────────────────── */
 function firstDay(){
-  if (cfg.first) return cfg.first;
+  if (normDate(cfg.first)) return normDate(cfg.first);
   const all = entries.concat(queue).map(e=>e.date).sort();
   return all.length ? all[0] : today();
 }
 const lastDay = () => addDays(firstDay(), cfg.days-1);
 
 function targetForIndex(d){
-  const N = Math.max(2, cfg.days), s = Math.max(1, cfg.start), e = Math.max(s, cfg.end);
-  if (d <= 0) return s;
+  const N = Math.max(2, Number(cfg.days)||115), s = Math.max(1, Number(cfg.start)||10),
+        e = Math.max(s, Number(cfg.end)||1000);
+  if (!isFinite(d) || d <= 0) return s;
   if (d >= N-1) return e;
   const t = d/(N-1);
   return Math.round(cfg.mode==='lin' ? s + (e-s)*t : s * Math.pow(e/s, t));
@@ -306,7 +323,7 @@ async function flush(){
     const data = await post({ action:'addBatch', items: batch.map(b=>({ts:b.ts, date:b.date, count:b.count})) });
     const done = new Set(batch.map(b=>b.tmp));
     queue = queue.filter(q => !done.has(q.tmp));
-    entries = entries.concat(data.entries);
+    entries = entries.concat(cleanEntries(data.entries));
     save(); render(); retryDelay = 2000;
     setSync('', queue.length ? 'wird gespeichert …' : 'gespeichert');
     if (queue.length) scheduleFlush(300);
@@ -323,7 +340,7 @@ async function load(){
     const res  = await fetch(API + '?action=list&token=' + encodeURIComponent(token));
     const data = await res.json();
     if (!data.ok) throw new Error(data.error);
-    entries = data.entries; save(); render();
+    entries = cleanEntries(data.entries); save(); render();
     setSync('', queue.length ? 'wird gespeichert …' : 'gespeichert');
     if (queue.length) flush();
   } catch (err) {
@@ -539,7 +556,7 @@ document.getElementById('tokenBtn').onclick = async () => {
   try{
     const res=await fetch(API+'?action=list&token='+encodeURIComponent(v));
     const data=await res.json(); if(!data.ok) throw new Error();
-    localStorage.setItem(K.tok,v); entries=data.entries; save(); showApp();
+    localStorage.setItem(K.tok,v); entries=cleanEntries(data.entries); save(); showApp();
   }catch(e){ document.getElementById('gateMsg').textContent='Token stimmt nicht oder keine Verbindung.'; }
 };
 
