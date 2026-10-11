@@ -56,6 +56,13 @@ header{display:flex; align-items:center; justify-content:space-between; padding:
 .undo:active{background:var(--card)}
 .undo:disabled{opacity:.4}
 
+/* ── Hinweis Ringrudern (Heute-Tab) ─────────── */
+.ringcall{display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:9px;
+  padding:13px 14px; border-radius:12px; background:var(--card); font-size:14px; font-weight:500; text-align:left}
+.ringcall b{color:var(--red); font-weight:600}
+.ringcall.done b{color:var(--green)}
+.ringcall.free b{color:var(--dim); font-weight:500}
+
 /* ── Kennzahlen ─────────────────────────────── */
 .stats{display:grid; grid-template-columns:repeat(3,1fr); margin-top:22px;
   border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
@@ -70,9 +77,11 @@ section{margin-top:26px}
 .title h2{font-size:15px; font-weight:600}
 .title .sub{font-size:12px; color:var(--dim)}
 svg.chart{width:100%; height:auto; display:block; overflow:visible}
+#bars [data-day]{cursor:pointer}
 .legend{display:flex; gap:16px; font-size:11px; color:var(--dim); margin-top:8px}
 .legend i{display:inline-block; width:14px; height:2px; background:var(--red); vertical-align:middle; margin-right:5px}
 .legend i.dot{width:7px; height:7px; border-radius:50%; background:var(--ink)}
+.hint{font-size:11px; color:var(--dim); text-align:center; margin-top:8px}
 
 /* ── Zielliste ──────────────────────────────── */
 .rows{border-top:1px solid var(--line)}
@@ -80,6 +89,7 @@ svg.chart{width:100%; height:auto; display:block; overflow:visible}
 .row .d{font-size:14px}
 .row .d em{font-style:normal; color:var(--dim); font-size:12px; margin-left:7px}
 .row .t{font-size:19px; font-weight:600; font-variant-numeric:tabular-nums}
+.row .t.ok{color:var(--green)}
 .row.now{background:var(--card); margin:0 -18px; padding-left:18px; padding-right:18px}
 .row.mile .t{color:var(--red)}
 .more{width:100%; margin-top:12px; padding:12px; border-radius:12px; border:1px solid var(--line);
@@ -99,6 +109,55 @@ summary::-webkit-details-marker{display:none}
 .field select{text-align:left}
 .act{width:100%; margin-top:10px; padding:13px; border-radius:12px; background:var(--card); font-size:14px; font-weight:500}
 .note{font-size:12px; color:var(--dim); line-height:1.55; margin-top:12px}
+.note b{color:var(--ink); font-weight:600}
+
+/* ── Ringrudern ─────────────────────────────── */
+.blocks{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px}
+.blk{border:1px solid var(--line); border-radius:12px; padding:10px 6px; text-align:center}
+.blk .n{font-size:12px; color:var(--dim)}
+.blk .s{font-size:14px; font-weight:600; margin-top:4px}
+.blk.now{border-color:var(--ink)}
+.blk.done{background:var(--card); border-color:var(--card)}
+.blk.done .s{color:var(--green)}
+.blk.miss .s, .blk.later .s{color:var(--dim); font-weight:500}
+.rstatus{font-size:14px; text-align:center; margin-top:16px; line-height:1.45}
+.rtarget{text-align:center; margin-top:18px}
+.rtarget .l{font-size:12px; color:var(--dim)}
+.rtarget .v{font-size:40px; font-weight:700; letter-spacing:-.02em; margin-top:2px; font-variant-numeric:tabular-nums}
+.lvl{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:8px; font-size:14px; color:var(--dim)}
+.lvl button{width:34px; height:34px; border-radius:50%; background:var(--card); font-size:18px; font-weight:600}
+.lvl button:disabled{opacity:.3}
+.lvl b{color:var(--ink)}
+.sets{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:18px}
+.set{background:var(--card); border-radius:12px; padding:11px 6px; text-align:center; border:2px solid transparent}
+.set .n{font-size:11px; color:var(--dim)}
+.set .v{font-size:26px; font-weight:700; margin-top:2px; font-variant-numeric:tabular-nums}
+.set .t{font-size:11px; color:var(--dim); margin-top:1px}
+.set.ok .v{color:var(--green)}
+.set.low .v{color:var(--red)}
+.set.cur{background:var(--bg); border-color:var(--ink)}
+.set.cur .v{color:var(--dim)}
+.stepper{display:flex; align-items:center; justify-content:center; gap:22px; margin-top:16px}
+.stepper button{width:56px; height:56px; border-radius:50%; background:var(--card); font-size:28px; font-weight:600}
+.stepper button:active{background:var(--red); color:#fff}
+.stepper .v{font-size:56px; font-weight:700; min-width:80px; text-align:center; font-variant-numeric:tabular-nums}
+.btn-pri{width:100%; padding:15px; border-radius:12px; background:var(--red); color:#fff; font-size:15px; font-weight:600; margin-top:14px}
+.btn-pri.resting{background:var(--ink)}
+.btn-sec{width:100%; padding:13px; border-radius:12px; border:1px solid var(--line); font-size:14px; font-weight:500; color:var(--dim); margin-top:14px}
+
+/* ── Korrektur-Blatt ────────────────────────── */
+.sheet-bg{position:fixed; inset:0; background:rgba(14,14,18,.38); z-index:20; display:flex; align-items:flex-end; justify-content:center}
+.sheet{background:var(--bg); width:100%; max-width:560px; border-radius:18px 18px 0 0;
+  padding:20px 18px calc(18px + env(safe-area-inset-bottom))}
+.sheet h3{margin:0; font-size:17px; font-weight:600}
+.sheet .sub{font-size:13px; color:var(--dim); margin-top:3px}
+.sheet .val{font-size:60px; font-weight:700; text-align:center; margin:14px 0 2px; font-variant-numeric:tabular-nums}
+.sheet .was{font-size:13px; color:var(--dim); text-align:center; min-height:18px}
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px}
+.steps button{background:var(--card); border-radius:12px; padding:15px 0; font-size:18px; font-weight:600; font-variant-numeric:tabular-nums}
+.steps button:active{background:var(--red); color:#fff}
+.sheet .two{display:grid; grid-template-columns:1fr 2fr; gap:8px; margin-top:14px}
+.sheet .two button{margin-top:0}
 
 /* ── Tab-Leiste ─────────────────────────────── */
 nav{position:fixed; left:0; right:0; bottom:0; background:rgba(255,255,255,.94);
@@ -133,7 +192,7 @@ nav svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.
 <main id="app" class="hide">
 
   <header>
-    <div class="wordmark">LIEGESTÜTZ</div>
+    <div class="wordmark" id="wordmark">LIEGESTÜTZ</div>
     <div id="sync"><span class="dot"></span><span id="syncText">gespeichert</span></div>
   </header>
 
@@ -157,6 +216,7 @@ nav svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.
       <button data-n="25">25<span>Stück</span></button>
     </div>
     <button class="undo" id="undoBtn">Letzte Eingabe rückgängig</button>
+    <button class="ringcall" id="ringCall"><span>Ringrudern</span><b id="ringCallTxt">–</b></button>
 
     <div class="stats">
       <div class="stat"><div class="v" id="sStreak">0</div><div class="l">Tage in Serie</div></div>
@@ -167,7 +227,52 @@ nav svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.
     <section>
       <div class="title"><h2>Letzte 7 Tage</h2><span class="sub" id="avg7"></span></div>
       <svg class="chart" id="bars" viewBox="0 0 340 170"></svg>
+      <div class="hint">Auf einen Tag tippen, um ihn zu korrigieren</div>
     </section>
+  </div>
+
+  <!-- ── Tab: Rudern ── -->
+  <div id="tabRing" class="hide">
+    <div class="datum">Ringrudern · eine Einheit pro Block</div>
+    <div class="blocks" id="rBlocks"></div>
+    <div class="rstatus" id="rStatus"></div>
+    <button class="btn-sec hide" id="rAnyway">Trotzdem heute eintragen</button>
+
+    <div id="rWork">
+      <div class="rtarget">
+        <div class="l" id="rTargetL">Ziel heute</div>
+        <div class="v" id="rTarget">–</div>
+        <div class="lvl"><button id="lvlDn" aria-label="Stufe leichter">−</button><span>Stufe <b id="rLevel">3</b></span><button id="lvlUp" aria-label="Stufe schwerer">+</button></div>
+      </div>
+      <div class="sets" id="rSets"></div>
+      <div id="rEntry">
+        <div class="stepper"><button id="rDn" aria-label="weniger">−</button><div class="v" id="rReps">0</div><button id="rUp" aria-label="mehr">+</button></div>
+        <button class="btn-pri" id="rSave">Satz 1 speichern</button>
+      </div>
+      <div class="rstatus hide" id="rDone"></div>
+      <button class="undo" id="rUndo">Letzten Satz löschen</button>
+    </div>
+
+    <section>
+      <div class="title"><h2>Einheiten</h2><span class="sub" id="rSub"></span></div>
+      <svg class="chart" id="rChart" viewBox="0 0 340 150"></svg>
+      <div class="rows" id="rList" style="margin-top:14px"></div>
+    </section>
+
+    <details>
+      <summary>So funktioniert's · Einstellungen</summary>
+      <div class="note">
+        <b>Blöcke:</b> Mo–Di, Mi–Fr, Sa–So – in jedem Block eine Einheit, wann du willst. Nur nicht zwei Tage hintereinander; die App sagt dir dann, welcher Tag besser passt.<br><br>
+        <b>Stufe</b> = wie flach du liegst. 1 = recht aufrecht (leicht), 5 = fast waagrecht knapp über dem Boden (schwer). Ringe höher hängen oder Füße weiter zurück macht es leichter.<br><br>
+        <b>Jeder Satz</b> endet, wenn noch 1–2 saubere Wiederholungen gingen – nicht bis zum Versagen. Etwa 2 Minuten Pause, die App zählt mit.<br><br>
+        <b>Steigerung:</b> Schaffst du alle drei Sätze, kommt beim nächsten Mal genau eine Wiederholung dazu, in einem Satz. Bei <span id="rHiTxt">3 × 10</span> geht es eine Stufe flacher und wieder mit <span id="rLoTxt">3 × 5</span> los. Zweimal hintereinander nicht geschafft: eine Wiederholung zurück.
+      </div>
+      <div class="field"><label for="rL0">Startstufe</label><input id="rL0" type="number" inputmode="numeric" min="1"></div>
+      <div class="field"><label for="rLo">Start-Wdh. pro Satz</label><input id="rLo" type="number" inputmode="numeric" min="1"></div>
+      <div class="field"><label for="rHi">Stufenwechsel bei</label><input id="rHi" type="number" inputmode="numeric" min="2"></div>
+      <button class="act" id="rSaveCfg">Einstellungen speichern</button>
+      <div class="note">Die Steigerung wird immer aus allen bisherigen Einheiten neu berechnet – geänderte Startwerte wirken also rückwirkend.</div>
+    </details>
   </div>
 
   <!-- ── Tab: Plan ── -->
@@ -209,10 +314,31 @@ nav svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.
 
 </main>
 
+<!-- ══ Korrektur eines Tages ══ -->
+<div class="sheet-bg hide" id="fixBg">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="fixTitle">
+    <h3 id="fixTitle">–</h3>
+    <div class="sub" id="fixSub">–</div>
+    <div class="val" id="fixVal">0</div>
+    <div class="was" id="fixWas"></div>
+    <div class="steps">
+      <button data-d="-10">−10</button><button data-d="-1">−1</button>
+      <button data-d="1">+1</button><button data-d="10">+10</button>
+    </div>
+    <div class="two">
+      <button class="btn-sec" id="fixCancel">Abbrechen</button>
+      <button class="btn-pri" id="fixSave">Speichern</button>
+    </div>
+  </div>
+</div>
+
 <nav id="nav" class="hide">
   <button data-tab="heute" class="on">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 7 4"/></svg>
     Heute</button>
+  <button data-tab="ring">
+    <svg viewBox="0 0 24 24"><path d="M8 3v7.5M16 3v7.5"/><circle cx="8" cy="15" r="4.5"/><circle cx="16" cy="15" r="4.5"/></svg>
+    Rudern</button>
   <button data-tab="plan">
     <svg viewBox="0 0 24 24"><path d="M3 19h18"/><path d="M4 16c4-1 7-4 8-7s3-5 8-6"/></svg>
     Plan</button>
@@ -224,11 +350,13 @@ nav svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.
    ═══════════════════════════════════════════════════════════ */
 const API = 'https://script.google.com/macros/s/AKfycbwJdw2jmSdlExzSxFr4VwM_6Tw9jEJNJgz6-_uWHDQ0khRJePjBiCDY45zPasG4VhvtoA/exec';
 
-const K = { tok:'pu_token', cfg:'pu_cfg', queue:'pu_queue', cache:'pu_cache' };
-const DEFAULTS = { start:10, end:1000, days:115, mode:'exp', first:null };
+const K = { tok:'pu_token', cfg:'pu_cfg', queue:'pu_queue', cache:'pu_cache', rcfg:'pu_ring_cfg' };
+const DEFAULTS  = { start:10, end:1000, days:115, mode:'exp', first:null };
+const RING_DEFS = { level:3, lo:5, hi:10 };
 
 let token   = localStorage.getItem(K.tok) || '';
 let cfg     = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(K.cfg) || '{}'));
+let rcfg    = Object.assign({}, RING_DEFS, JSON.parse(localStorage.getItem(K.rcfg) || '{}'));
 let entries = [];   // wird nach der Definition von cleanEntries befüllt
 let queue   = JSON.parse(localStorage.getItem(K.queue) || '[]');
 let flushTimer = null, retryDelay = 2000;
@@ -242,6 +370,7 @@ const parseISO = s => { const [y,m,d]=s.split('-').map(Number); return new Date(
 const addDays = (s,n) => { const d=parseISO(s); d.setDate(d.getDate()+n); return iso(d); };
 const daysBetween = (a,b) => Math.round((parseISO(b)-parseISO(a))/86400000);
 const WD = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+const WDL = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
 
 /* Das Datum aus dem Sheet kann als '2026-09-08' oder als voller
    Zeitstempel ankommen – hier wird beides auf 'YYYY-MM-DD' gebracht. */
@@ -257,7 +386,7 @@ const cleanEntries = arr => {
   const seen = {};
   return (arr||[])
     .map(e => ({ id:String(e.id||''), ts:e.ts, count:Number(e.count)||0,
-                 date: normDate(e.date) || normDate(e.ts) }))
+                 date: normDate(e.date) || (isRing(e) ? null : normDate(e.ts)) }))
     .filter(e => {
       if (!e.date || !e.count || !e.id || seen[e.id]) return false;
       seen[e.id] = true; return true;
@@ -265,13 +394,24 @@ const cleanEntries = arr => {
 };
 const MO = ['Jän','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const short = s => { const d=parseISO(s); return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'; };
+const wdShort = s => WD[parseISO(s).getDay()]+' '+short(s);
+
+/* ── Ringrudern im selben Sheet ──────────────
+   Ruder-Sätze liegen als normale Zeilen im Sheet. Erkennbar sind sie an
+   der Zeitstempel-Spalte: 'ring|L3|2026-10-11T09:12:00.000Z'
+   (L3 = Stufe 3). Die Anzahl ist die Wiederholungszahl des Satzes.
+   So braucht das Apps Script keine Änderung. */
+function isRing(e){ return String((e && e.ts) || '').startsWith('ring|'); }
+const ringLevel = e => Number((String(e.ts).split('|')[1]||'').replace(/\D/g,'')) || rcfg.level;
+const ringTime  = e => String(e.ts).split('|').slice(2).join('|');
+const pushItems = () => entries.concat(queue).filter(e => !isRing(e));
 
 entries = cleanEntries(JSON.parse(localStorage.getItem(K.cache) || '[]'));
 
 /* ── Ziel-Rampe ─────────────────────────────── */
 function firstDay(){
   if (normDate(cfg.first)) return normDate(cfg.first);
-  const all = entries.concat(queue).map(e=>e.date).sort();
+  const all = pushItems().map(e=>e.date).sort();
   return all.length ? all[0] : today();
 }
 const lastDay = () => addDays(firstDay(), cfg.days-1);
@@ -289,7 +429,7 @@ const targetFor = date => targetForIndex(daysBetween(firstDay(), date));
 /* ── Aggregation ────────────────────────────── */
 function byDay(){
   const m = new Map();
-  for (const e of entries.concat(queue)) m.set(e.date, (m.get(e.date)||0) + e.count);
+  for (const e of pushItems()) m.set(e.date, (m.get(e.date)||0) + e.count);
   return m;
 }
 const sumFor = (m,d) => m.get(d) || 0;
@@ -362,24 +502,288 @@ async function load(){
 
 /* ── Eingabe ────────────────────────────────── */
 let lastTap = 0;
+const newCid = () => 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+function enqueue(item){
+  const cid = newCid();
+  queue.push(Object.assign({ tmp:cid, cid:cid }, item));
+  save(); render(); setSync('pending','wird gespeichert …'); scheduleFlush();
+}
 function addReps(n){
   const now = Date.now();
   if (now - lastTap < 60) return;      // schluckt doppelt ausgeloeste Klick-Ereignisse
   lastTap = now;
   if (navigator.vibrate) navigator.vibrate(12);
-  const cid = 'c' + now.toString(36) + Math.random().toString(36).slice(2,8);
-  queue.push({ tmp:cid, cid:cid, ts:new Date().toISOString(), date:today(), count:n });
-  save(); render(); setSync('pending','wird gespeichert …'); scheduleFlush();
+  enqueue({ ts:new Date().toISOString(), date:today(), count:n });
 }
-async function undo(){
-  if (queue.length){ queue.pop(); save(); render(); if(!queue.length) setSync('','gespeichert'); return; }
-  const mine = entries.filter(e=>e.date===today()).sort((a,b)=>a.ts<b.ts?-1:1);
+
+/* Löscht den jüngsten passenden Eintrag: zuerst aus der Warteschlange,
+   sonst den letzten gespeicherten von heute im Sheet. */
+async function removeLatest(match, timeOf){
+  for (let i=queue.length-1; i>=0; i--){
+    if (match(queue[i])){
+      queue.splice(i,1); save(); render();
+      if (!queue.length) setSync('','gespeichert');
+      return;
+    }
+  }
+  const mine = entries.filter(e => match(e) && e.date===today()).sort((a,b)=>timeOf(a)<timeOf(b)?-1:1);
   if (!mine.length) return;
   const last = mine[mine.length-1];
   entries = entries.filter(e=>e.id!==last.id);
   save(); render(); setSync('pending','wird gespeichert …');
   try { await post({action:'delete', id:last.id}); setSync('','gespeichert'); }
   catch(e){ entries.push(last); save(); render(); setSync('error','löschen fehlgeschlagen'); }
+}
+const undo     = () => removeLatest(e => !isRing(e), e => String(e.ts));
+const ringUndo = () => removeLatest(e => isRing(e) && e.date===today(), ringTime);
+
+/* ── Tag korrigieren ────────────────────────────
+   Gespeichert wird die Differenz als eigene Zeile mit dem Datum des
+   korrigierten Tages (z. B. -5). Die alten Zeilen bleiben unverändert. */
+let fixDay = null, fixOrig = 0, fixVal = 0;
+function openFix(d){
+  if (daysBetween(d, today()) > 6 || d > today()) return;
+  fixDay = d; fixOrig = fixVal = sumFor(byDay(), d);
+  renderFix();
+  document.getElementById('fixBg').classList.remove('hide');
+}
+function closeFix(){ document.getElementById('fixBg').classList.add('hide'); fixDay = null; }
+function renderFix(){
+  const dt = parseISO(fixDay), diff = fixVal - fixOrig;
+  document.getElementById('fixTitle').textContent =
+    (fixDay===today() ? 'Heute, ' : WDL[dt.getDay()]+', ') + short(fixDay);
+  document.getElementById('fixSub').textContent =
+    'Ziel ' + targetFor(fixDay) + ' · bisher eingetragen ' + fixOrig;
+  document.getElementById('fixVal').textContent = fixVal;
+  document.getElementById('fixWas').textContent =
+    diff ? (diff>0 ? '+' : '−') + Math.abs(diff) + ' gegenüber vorher' : 'unverändert';
+}
+function saveFix(){
+  const diff = fixVal - fixOrig, d = fixDay;
+  closeFix();
+  if (!diff) return;
+  enqueue({ ts:new Date().toISOString(), date:d, count:diff });
+}
+
+/* ── Ringrudern: Einheiten & Steigerung ─────── */
+function ringSessions(){
+  const m = new Map();
+  for (const e of entries.concat(queue)){
+    if (!isRing(e)) continue;
+    if (!m.has(e.date)) m.set(e.date, []);
+    m.get(e.date).push(e);
+  }
+  return [...m.entries()].sort((a,b)=>a[0]<b[0]?-1:1).map(([date,arr])=>{
+    arr.sort((a,b)=>ringTime(a)<ringTime(b)?-1:1);
+    return { date, level:ringLevel(arr[0]), sets:arr.map(e=>e.count) };
+  });
+}
+const lo3 = () => [rcfg.lo, rcfg.lo, rcfg.lo];
+
+/* Doppelte Progression, bewusst sanft:
+   alle drei Sätze geschafft  → +1 Wiederholung in einem Satz
+   3 × Obergrenze geschafft   → nächste Stufe, zurück auf 3 × Start
+   zweimal knapp verfehlt     → −1 Wiederholung */
+function ringPlan(sessions){
+  let L = rcfg.level, tgt = lo3(), miss = 0;
+  const hist = [];
+  for (const s of sessions){
+    if (s.level !== L){
+      if (s.level > L) tgt = lo3();
+      L = s.level; miss = 0;
+    }
+    const before = tgt.slice();
+    const met = s.sets.length >= 3 && tgt.every((t,i)=>s.sets[i] >= t);
+    hist.push(Object.assign({}, s, { target:before, met }));
+    if (met){
+      miss = 0;
+      if (tgt.every(t=>t >= rcfg.hi)){ L++; tgt = lo3(); }
+      else { let i = tgt.findIndex(v=>v < tgt[0]); if (i < 0) i = 0; tgt[i]++; }
+    } else if (++miss >= 2){
+      let i = 2; while (i > 0 && tgt[i] !== tgt[0]) i--;
+      if (tgt[i] > Math.max(1, rcfg.lo-2)) tgt[i]--;
+      miss = 0;
+    }
+  }
+  return { level:L, target:tgt, hist };
+}
+const fmtTarget = t => (t[0]===t[1] && t[1]===t[2]) ? '3 × '+t[0] : t.join(' / ');
+
+/* Blöcke: Mo–Di, Mi–Fr, Sa–So */
+const BLK = [{a:0,b:1,n:'Mo–Di'},{a:2,b:4,n:'Mi–Fr'},{a:5,b:6,n:'Sa–So'}];
+const dowMon = s => (parseISO(s).getDay()+6)%7;           // Mo = 0
+function blockOf(s){
+  const w = dowMon(s), i = w<2 ? 0 : (w<5 ? 1 : 2), mon = addDays(s,-w);
+  return { i, mon, name:BLK[i].n, start:addDays(mon,BLK[i].a), end:addDays(mon,BLK[i].b) };
+}
+
+let ringSel = null;          // gewählte Stufe für heute, bevor der erste Satz steht
+let ringReps = 0, ringRepsKey = '';
+let ringAnyway = false;
+let restEnd = 0, restTimer = null;
+
+function ringState(){
+  const t = today(), sessions = ringSessions();
+  const past = sessions.filter(s=>s.date < t);
+  const plan = ringPlan(past);
+  const todayS = sessions.find(s=>s.date===t) || null;
+  const level = todayS ? todayS.level : (ringSel ?? plan.level);
+  const target = level > plan.level ? lo3() : plan.target;
+  const b = blockOf(t);
+  const otherInBlock = sessions.find(s=>s.date>=b.start && s.date<=b.end && s.date!==t) || null;
+  const last = past[past.length-1];
+  const restedYesterday = !!last && last.date === addDays(t,-1);
+  const doneToday = !!todayS && todayS.sets.length >= 3;
+  return { t, sessions, plan, todayS, level, target, b, otherInBlock, restedYesterday, doneToday,
+           next: doneToday ? ringPlan(sessions) : null };
+}
+
+function addSet(){
+  const st = ringState(), n = st.todayS ? st.todayS.sets.length : 0;
+  if (n >= 3 || ringReps < 1) return;
+  if (navigator.vibrate) navigator.vibrate(12);
+  enqueue({ ts:'ring|L'+st.level+'|'+new Date().toISOString(), date:today(), count:ringReps });
+  ringSel = null;
+  if (n < 2) startRest(); else stopRest();
+  render();
+}
+function startRest(){
+  restEnd = Date.now() + 120000;
+  clearInterval(restTimer);
+  restTimer = setInterval(()=>{
+    if (Date.now() >= restEnd){
+      stopRest();
+      if (navigator.vibrate) navigator.vibrate([90,70,90]);
+    }
+    renderRing();
+  }, 1000);
+}
+function stopRest(){ clearInterval(restTimer); restTimer = null; restEnd = 0; }
+
+function renderRing(){
+  const st = ringState(), t = st.t;
+  const nSets = st.todayS ? st.todayS.sets.length : 0;
+
+  // Block-Kacheln dieser Woche
+  let bh = '';
+  BLK.forEach((B,i)=>{
+    const s0 = addDays(st.b.mon,B.a), s1 = addDays(st.b.mon,B.b);
+    const sess = st.sessions.find(s=>s.date>=s0 && s.date<=s1);
+    let cls = 'blk', txt;
+    if (sess){ cls += ' done'; txt = '✓ ' + WD[parseISO(sess.date).getDay()]; }
+    else if (s1 < t){ cls += ' miss'; txt = 'ausgelassen'; }
+    else if (i === st.b.i){ txt = 'offen'; }
+    else { cls += ' later'; txt = 'ab '+WD[parseISO(s0).getDay()]; }
+    if (i === st.b.i) cls += ' now';
+    bh += `<div class="${cls}"><div class="n">${B.n}</div><div class="s">${txt}</div></div>`;
+  });
+  document.getElementById('rBlocks').innerHTML = bh;
+
+  // Status
+  const nextStart = addDays(st.b.end,1);
+  let status, showWork = true;
+  if (st.doneToday){
+    status = `Heute erledigt. Nächster Block ab ${WDL[parseISO(nextStart).getDay()]}.`;
+  } else if (st.todayS){
+    status = `Satz ${nSets+1} von 3`;
+  } else if (st.otherInBlock){
+    status = `Block ${st.b.name} ist erledigt (${WDL[parseISO(st.otherInBlock.date).getDay()]}). `+
+             `Heute frei – weiter ab ${WDL[parseISO(nextStart).getDay()]}.`;
+    showWork = ringAnyway;
+  } else if (st.restedYesterday && t !== st.b.end){
+    status = `Fällig in diesem Block. Gestern gerudert – besser ab ${WDL[parseISO(addDays(t,1)).getDay()]}.`;
+  } else if (t === st.b.end){
+    status = `Heute fällig – letzter Tag im Block ${st.b.name}.`;
+  } else {
+    status = `Fällig im Block ${st.b.name}, bis ${WDL[parseISO(st.b.end).getDay()]}.`;
+  }
+  document.getElementById('rStatus').textContent = status;
+  document.getElementById('rAnyway').classList.toggle('hide', showWork || !st.otherInBlock);
+  document.getElementById('rWork').classList.toggle('hide', !showWork);
+
+  // Ziel & Stufe
+  document.getElementById('rTargetL').textContent = st.doneToday ? 'Heute geschafft' : 'Ziel heute';
+  document.getElementById('rTarget').textContent  = st.doneToday ? st.todayS.sets.join(' / ') : fmtTarget(st.target);
+  document.getElementById('rLevel').textContent   = st.level;
+  document.getElementById('lvlDn').disabled = nSets > 0 || st.level <= 1;
+  document.getElementById('lvlUp').disabled = nSets > 0;
+
+  // Satz-Kacheln
+  let sh = '';
+  for (let i=0;i<3;i++){
+    const v = st.todayS ? st.todayS.sets[i] : undefined, tg = st.target[i];
+    let cls = 'set', val = '–';
+    if (v !== undefined){ cls += v >= tg ? ' ok' : ' low'; val = v; }
+    else if (i === nSets){ cls += ' cur'; }
+    sh += `<div class="${cls}"><div class="n">Satz ${i+1}</div><div class="v">${val}</div><div class="t">Ziel ${tg}</div></div>`;
+  }
+  document.getElementById('rSets').innerHTML = sh;
+
+  // Eingabe
+  const key = t+':'+nSets+':'+st.level+':'+st.target.join(',');
+  if (key !== ringRepsKey){ ringRepsKey = key; ringReps = st.target[Math.min(nSets,2)]; }
+  document.getElementById('rEntry').classList.toggle('hide', nSets >= 3);
+  document.getElementById('rReps').textContent = ringReps;
+  const saveBtn = document.getElementById('rSave');
+  const left = Math.max(0, Math.ceil((restEnd - Date.now())/1000));
+  if (left > 0){
+    saveBtn.classList.add('resting');
+    saveBtn.textContent = `Pause ${Math.floor(left/60)}:${pad(left%60)} · dann Satz ${nSets+1}`;
+  } else {
+    saveBtn.classList.remove('resting');
+    saveBtn.textContent = `Satz ${nSets+1} speichern`;
+  }
+
+  const doneEl = document.getElementById('rDone');
+  if (st.doneToday){
+    const n = st.next, met = n.hist[n.hist.length-1].met;
+    doneEl.innerHTML = (met ? 'Alle drei Sätze geschafft. ' : 'Diesmal nicht ganz – kein Problem, gleiches Ziel nochmal. ') +
+      `<br>Nächstes Mal: <b>${fmtTarget(n.target)}</b> auf Stufe <b>${n.level}</b>` +
+      (n.level > st.level ? ' – eine Stufe flacher.' : '.');
+    doneEl.classList.remove('hide');
+  } else doneEl.classList.add('hide');
+  document.getElementById('rUndo').disabled = nSets === 0;
+
+  // Verlauf: Diagramm der letzten 12 Einheiten
+  const hist = ringPlan(st.sessions).hist;
+  const show = hist.slice(-12);
+  const W=340, H=150, base=H-34, top=14, n=Math.max(show.length,6), slot=W/n, bw=slot*0.5;
+  const max = Math.max(1, ...show.map(h=>h.sets.reduce((a,b)=>a+b,0)), ...show.map(h=>h.target.reduce((a,b)=>a+b,0)))*1.12;
+  let s = '';
+  show.forEach((h,i)=>{
+    const tot = h.sets.reduce((a,b)=>a+b,0), tt = h.target.reduce((a,b)=>a+b,0);
+    const x = i*slot + (slot-bw)/2, bh2 = Math.max(3,(tot/max)*(base-top)), ty = base-(tt/max)*(base-top);
+    const fresh = h.date===t && h.sets.length<3;
+    s += `<rect x="${x}" y="${base-bh2}" width="${bw}" height="${bh2}" rx="3" fill="${h.met?'var(--green)':(fresh?'var(--dim)':'var(--red)')}"/>`;
+    s += `<line x1="${x-4}" y1="${ty}" x2="${x+bw+4}" y2="${ty}" stroke="var(--dim)" stroke-width="1.4" stroke-dasharray="3 3"/>`;
+    s += `<text x="${x+bw/2}" y="${base-bh2-6}" text-anchor="middle" fill="var(--ink)" font-family="Archivo" font-size="12" font-weight="600">${tot}</text>`;
+    s += `<text x="${x+bw/2}" y="${H-18}" text-anchor="middle" fill="var(--dim)" font-family="Archivo" font-size="10">${short(h.date)}</text>`;
+    s += `<text x="${x+bw/2}" y="${H-5}" text-anchor="middle" fill="var(--dim)" font-family="Archivo" font-size="10">St. ${h.level}</text>`;
+  });
+  if (!show.length) s += `<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--dim)" font-family="Archivo" font-size="13">Noch keine Einheit</text>`;
+  s += `<line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="var(--line)"/>`;
+  document.getElementById('rChart').innerHTML = s;
+
+  // Verlauf: Liste
+  let lh = '';
+  hist.slice(-8).reverse().forEach(h=>{
+    lh += `<div class="row"><span class="d">${wdShort(h.date)}<em>Stufe ${h.level} · Ziel ${h.target.join('/')}</em></span>`+
+          `<span class="t ${h.met?'ok':''}">${h.sets.join(' / ')}</span></div>`;
+  });
+  document.getElementById('rList').innerHTML = lh;
+  const allReps = hist.reduce((a,h)=>a+h.sets.reduce((x,y)=>x+y,0),0);
+  document.getElementById('rSub').textContent = hist.length ? `${hist.length} Einheiten · ${allReps} Wdh.` : '';
+  document.getElementById('rHiTxt').textContent = '3 × '+rcfg.hi;
+  document.getElementById('rLoTxt').textContent = '3 × '+rcfg.lo;
+
+  // Hinweis im Heute-Tab
+  const call = document.getElementById('ringCall'), ct = document.getElementById('ringCallTxt');
+  call.className = 'ringcall';
+  if (st.doneToday){ call.classList.add('done'); ct.textContent = 'heute erledigt ✓'; }
+  else if (st.todayS){ ct.textContent = `Satz ${nSets+1} von 3 →`; }
+  else if (st.otherInBlock){ call.classList.add('free'); ct.textContent = 'Block erledigt · heute frei'; }
+  else if (st.restedYesterday && t !== st.b.end){ call.classList.add('free'); ct.textContent = 'fällig, besser ab morgen'; }
+  else { ct.textContent = 'fällig · ' + fmtTarget(st.target) + ' →'; }
 }
 
 /* ── Ring ───────────────────────────────────── */
@@ -403,7 +807,7 @@ function drawBars(m){
   let s='';
   days.forEach((d,i)=>{
     const x=i*slot+(slot-bw)/2;
-    const h=Math.max(vals[i]>0?3:0,(vals[i]/max)*(base-top));
+    const h=Math.max(vals[i]>0?3:0,(Math.max(0,vals[i])/max)*(base-top));
     const ty=base-(tg[i]/max)*(base-top);
     const met=vals[i]>=tg[i]&&vals[i]>0;
     s+=`<rect x="${x}" y="${base-h}" width="${bw}" height="${h}" rx="3" fill="${met?'var(--green)':'var(--red)'}"/>`;
@@ -412,6 +816,8 @@ function drawBars(m){
     s+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" fill="var(--dim)" font-family="Archivo" font-size="11">${WD[parseISO(d).getDay()]}</text>`;
   });
   s+=`<line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="var(--line)"/>`;
+  // unsichtbare Tippflächen über jeder Spalte
+  days.forEach((d,i)=>{ s+=`<rect data-day="${d}" x="${i*slot}" y="0" width="${slot}" height="${H}" fill="transparent"/>`; });
   document.getElementById('bars').innerHTML=s;
 }
 
@@ -540,12 +946,15 @@ function render(){
   document.getElementById('totalSub').textContent=total.toLocaleString('de-AT')+' seit Tag 1';
   renderList(m);
 
-  document.getElementById('undoBtn').disabled=!(queue.length||entries.some(e=>e.date===t));
+  document.getElementById('undoBtn').disabled =
+    !(queue.some(e=>!isRing(e)) || entries.some(e=>e.date===t && !isRing(e)));
   const step = cfg.mode==='lin'
     ? '+'+Math.round((cfg.end-cfg.start)/(cfg.days-1))+' pro Tag'
     : '+'+((Math.pow(cfg.end/cfg.start,1/(cfg.days-1))-1)*100).toFixed(1)+' % pro Tag';
   document.getElementById('cfgNote').textContent =
     `${step} · Ziel morgen ${targetFor(addDays(t,1))} · in 30 Tagen ${targetFor(addDays(t,30))} · ${cfg.end} am ${short(lastDay())}`;
+
+  renderRing();
 }
 
 /* ── Start & Bedienung ──────────────────────── */
@@ -558,11 +967,14 @@ function showApp(){
 function fillCfg(){
   fStart.value=cfg.start; fEnd.value=cfg.end; fDays.value=cfg.days;
   fMode.value=cfg.mode;   fFirst.value=firstDay();
+  rL0.value=rcfg.level; rLo.value=rcfg.lo; rHi.value=rcfg.hi;
 }
 function setTab(name){
   tab=name;
   document.getElementById('tabHeute').classList.toggle('hide', name!=='heute');
+  document.getElementById('tabRing').classList.toggle('hide', name!=='ring');
   document.getElementById('tabPlan').classList.toggle('hide', name!=='plan');
+  document.getElementById('wordmark').textContent = name==='ring' ? 'RUDERN' : 'LIEGESTÜTZ';
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===name));
   window.scrollTo(0,0);
 }
@@ -590,6 +1002,33 @@ document.getElementById('saveCfg').onclick=()=>{
   localStorage.setItem(K.cfg, JSON.stringify(cfg)); render();
 };
 document.getElementById('forget').onclick=()=>{ localStorage.removeItem(K.tok); location.reload(); };
+
+/* Korrektur */
+document.getElementById('bars').addEventListener('click', ev=>{
+  const r = ev.target.closest('[data-day]'); if (r) openFix(r.getAttribute('data-day'));
+});
+document.querySelectorAll('.steps button').forEach(b=>b.addEventListener('click',()=>{
+  fixVal = Math.max(0, fixVal + Number(b.dataset.d)); renderFix();
+}));
+document.getElementById('fixCancel').onclick = closeFix;
+document.getElementById('fixSave').onclick   = saveFix;
+document.getElementById('fixBg').addEventListener('click', ev=>{ if (ev.target.id==='fixBg') closeFix(); });
+
+/* Rudern */
+document.getElementById('ringCall').onclick = ()=>setTab('ring');
+document.getElementById('rUp').onclick  = ()=>{ ringReps++; renderRing(); };
+document.getElementById('rDn').onclick  = ()=>{ ringReps=Math.max(1,ringReps-1); renderRing(); };
+document.getElementById('rSave').onclick = addSet;
+document.getElementById('rUndo').onclick = ()=>{ stopRest(); ringUndo(); };
+document.getElementById('rAnyway').onclick = ()=>{ ringAnyway=true; renderRing(); };
+document.getElementById('lvlUp').onclick = ()=>{ ringSel = ringState().level + 1; renderRing(); };
+document.getElementById('lvlDn').onclick = ()=>{ ringSel = Math.max(1, ringState().level - 1); renderRing(); };
+document.getElementById('rSaveCfg').onclick = ()=>{
+  const lo = Math.max(1, +rLo.value||RING_DEFS.lo);
+  rcfg = { level:Math.max(1, +rL0.value||RING_DEFS.level), lo, hi:Math.max(lo+1, +rHi.value||RING_DEFS.hi) };
+  localStorage.setItem(K.rcfg, JSON.stringify(rcfg)); fillCfg(); render();
+};
+
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ queue.length?flush():load(); } });
 window.addEventListener('online',()=>{ if(queue.length) flush(); });
 
